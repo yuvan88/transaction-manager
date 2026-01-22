@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Transaction Manager</title>
+  <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+</head>
+<body>
+
+<div id="app">
+  <h2>Add Transaction</h2>
+
+  <form @submit.prevent="submitForm">
+    <input v-model="description" placeholder="Description" required>
+    <br><br>
+    <input v-model.number="amount" type="number" placeholder="Amount" required>
+    <br><br>
+    <button type="submit">Save</button>
+  </form>
+
+  <h2>Transaction List</h2>
+
+  <ul>
+    <li v-for="t in transactions" :key="t.id">
+      {{ t.description }} -
+      {{ formatCurrency(t.amount) }} -
+      {{ formatDate(t.created_at) }}
+    </li>
+  </ul>
+</div>
+
+<script>
+const app = Vue.createApp({
+  data() {
+    return {
+      description: '',
+      amount: '',
+      transactions: []
+    }
+  },
+  methods: {
+    submitForm() {
+      fetch('../backend/save.php', {
+        method: 'POST',
+        body: JSON.stringify({
+          description: this.description,
+          amount: this.amount
+        })
+      }).then(() => {
+        this.description = '';
+        this.amount = '';
+        this.fetchData();
+      });
+    },
+    fetchData() {
+      fetch('../backend/list.php')
+        .then(res => res.json())
+        .then(data => this.transactions = data);
+    },
+    formatCurrency(value) {
+      return new Intl.NumberFormat('en-MY', {
+        style: 'currency',
+        currency: 'MYR'
+      }).format(value);
+    },
+    formatDate(date) {
+      return new Date(date).toLocaleDateString();
+    }
+  },
+  mounted() {
+    this.fetchData();
+  }
+});
+
+app.mount('#app');
+</script>
+
+</body>
+</html>
