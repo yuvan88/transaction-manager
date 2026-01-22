@@ -1,6 +1,67 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <style>
+body {
+  font-family: Arial, sans-serif;
+  background: #f5f7fa;
+  display: flex;
+  justify-content: center;
+  padding-top: 50px;
+}
+
+#app {
+  background: white;
+  padding: 30px;
+  border-radius: 10px;
+  width: 400px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+
+h2 {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+form input {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+form button {
+  width: 100%;
+  padding: 10px;
+  background: #4f46e5;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+form button:hover {
+  background: #4338ca;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+
+table th, table td {
+  padding: 8px;
+  border-bottom: 1px solid #ddd;
+  text-align: left;
+}
+
+table th {
+  background: #f0f0f0;
+}
+</style>
+
   <meta charset="UTF-8">
   <title>Transaction Manager</title>
   <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
@@ -8,25 +69,38 @@
 <body>
 
 <div id="app">
-  <h2>Add Transaction</h2>
+  <h2>💳 Transaction Manager</h2>
+<p style="text-align:center;color:gray;">Vue + PHP + MySQL Demo</p>
+<h3>Add Transaction</h3>
+
 
   <form @submit.prevent="submitForm">
     <input v-model="description" placeholder="Description" required>
     <br><br>
-    <input v-model.number="amount" type="number" placeholder="Amount" required>
+    <input v-model.number="amount" type="number" step="0.01" placeholder="Amount" required>
     <br><br>
     <button type="submit">Save</button>
   </form>
 
   <h2>Transaction List</h2>
 
-  <ul>
-    <li v-for="t in transactions" :key="t.id">
-      {{ t.description }} -
-      {{ formatCurrency(t.amount) }} -
-      {{ formatDate(t.created_at) }}
-    </li>
-  </ul>
+  <table>
+  <thead>
+    <tr>
+      <th>Description</th>
+      <th>Amount</th>
+      <th>Date</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr v-for="t in transactions" :key="t.id">
+      <td>{{ t.description }}</td>
+      <td>{{ formatCurrency(t.amount) }}</td>
+      <td>{{ formatDate(t.created_at) }}</td>
+    </tr>
+  </tbody>
+</table>
+
 </div>
 
 <script>
